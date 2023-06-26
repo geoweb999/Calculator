@@ -14,7 +14,7 @@
       width: 400px;
       background-color: #f4f4f4;
       padding: 10px;
-      border-radius: 5px;
+      border-radius: 10px;
       margin: 0 auto;
     }
     
@@ -26,6 +26,7 @@
       font-family: 'Codystar', cursive;
       font-size: 24px;
       letter-spacing: 5px;
+      background-color: rgb(62, 61, 61);
       color: rgb(248, 91, 0);
       font-weight: 400;
     }
@@ -33,16 +34,19 @@
     .calculator .row {
       display: flex;
       justify-content: space-between;
+      margin: 2px;
     }
     
     .calculator .row button {
       width: 100px;
-      height: 75px;
+      height: 50px;
       font-size: 20px;
-      background-color: #e0e0e0;
+      background-color: #000000;
       border: none;
       border-radius: 3px;
       cursor: pointer;
+      color:#f4f4f4;
+      margin: 2px;
     }
     
     .calculator .row button:hover {
@@ -56,6 +60,15 @@
     
     .calculator .row button.operator:hover {
       background-color: #4643f0;
+    }
+
+    .calculator .row button.equals {
+      background-color: #d55201;
+      color: white;
+    }
+    
+    .calculator .row button.equals:hover {
+      background-color: #ff6200;
     }
   </style>
 </head>
@@ -83,7 +96,7 @@
     <div class="row">
       <button onclick="appendToResult('0')">0</button>
       <button onclick="appendToResult('.')">.</button>
-      <button onclick="calculateResult()">=</button>
+      <button onclick="calculateResult()" class="equals">=</button>
       <button onclick="appendToResult('/')" class="operator">/</button>
     </div>
     <div class="row">
@@ -99,8 +112,49 @@
     }
     
     function calculateResult() {
-      var result = eval(document.getElementById('result').value);
-      document.getElementById('result').value = result;
+      var result = document.getElementById('result').value;
+      var operators = ['+', '-', '*', '/'];
+      var currentOperator;
+      
+      // Find the operator in the result string
+      for (var i = 0; i < operators.length; i++) {
+        if (result.includes(operators[i])) {
+          currentOperator = operators[i];
+          break;
+        }
+      }
+      
+      // Split the result string into operands
+      var operands = result.split(currentOperator);
+      
+      if (operands.length !== 2) {
+        alert('Invalid expression');
+        return;
+      }
+      
+      var operand1 = parseFloat(operands[0]);
+      var operand2 = parseFloat(operands[1]);
+      var finalResult;
+      
+      // Perform the corresponding operation
+      switch (currentOperator) {
+        case '+':
+          finalResult = operand1 + operand2;
+          break;
+        case '-':
+          finalResult = operand1 - operand2;
+          break;
+        case '*':
+          finalResult = operand1 * operand2;
+          break;
+        case '/':
+          finalResult = operand1 / operand2;
+          break;
+        default:
+          break;
+      }
+      
+      document.getElementById('result').value = finalResult;
     }
     
     function clearResult() {
