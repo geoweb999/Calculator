@@ -156,6 +156,9 @@
             appendToResult('L');
             calculateShiftResult();
             break;
+          case '±':
+            appendToResult('3.1415926535');
+            break;
           default:
             break;
         }
@@ -267,7 +270,7 @@
       var operatorFound = false;
       for (let i = 0; i < result.length; i++) {
         var c = result[i];
-        if (c == 'C' || c == 'F'  || c == '^' || c == 'L') {
+        if (c == 'C' || c == 'F'  || c == '^' || c == 'L' || c =='') {
             currentOperator = c;
             operatorFound = true;
             split = i;
@@ -295,6 +298,10 @@
         case 'L':
           document.getElementById('result').value = Math.log(operand);
           break;
+        case '':
+          appendToResult(3.1415926535);
+          break;
+          
       }
 
     }
@@ -307,7 +314,7 @@
       var currentValue = document.getElementById('result').value;
       document.getElementById('result').value = currentValue.slice(0, -1);
     }
-    
+
     function showHelp() {
       var helpMessage = "This is a simple calculator.\n"
                       + "Use the number buttons to enter digits.\n"
