@@ -22,11 +22,10 @@
       width: 95%;
       padding: 10px;
       margin-bottom: 10px;
-      background-color: white;
       font-family: 'Codystar', cursive;
       font-size: 24px;
       letter-spacing: 5px;
-      background-color: rgb(62, 61, 61);
+      background-color: rgb(0, 0, 0);
       color: rgb(248, 91, 0);
       font-weight: 400;
     }
@@ -107,54 +106,84 @@
   </div>
 
   <script>
+    var equalsPressed = false;
+    var decimalPressed = false;
+
     function appendToResult(value) {
-      document.getElementById('result').value += value;
+        if (decimalPressed && value == '.') {
+            return;
+        }
+        if (!decimalPressed && value == '.') {
+            decimalPressed = true;
+        } 
+        var operators = ['+', '-', '*', '/'];
+        if (operators.includes(value)) {
+            decimalPressed = false;
+        }
+        if (equalsPressed) {
+            document.getElementById('result').value = value;
+            equalsPressed = false;
+        } else {
+            document.getElementById('result').value += value;
+        }   
     }
     
     function calculateResult() {
-      var result = document.getElementById('result').value;
+        var result = document.getElementById('result').value;
+        var finalResult = calculateResultHelper(result);
+        document.getElementById('result').value = finalResult;
+
+    }
+    function calculateResultHelper(result) {
+      console.log(result);
+      equalsPressed = true;  
       var operators = ['+', '-', '*', '/'];
       var currentOperator;
+      var split;
       
       // Find the operator in the result string
-      for (var i = 0; i < operators.length; i++) {
-        if (result.includes(operators[i])) {
-          currentOperator = operators[i];
-          break;
+      var operatorFound = false;
+      for (let i = 0; i < result.length; i++) {
+        var c = result[i];
+        if (c == '+' || c == '-'  || c == '*' || c == '/') {
+            currentOperator = c;
+            operatorFound = true;
+            split = i;
+            break;
         }
+    }
+       if (!operatorFound) {
+        return result;
       }
       
       // Split the result string into operands
-      var operands = result.split(currentOperator);
-      
-      if (operands.length !== 2) {
-        alert('Invalid expression');
-        return;
-      }
-      
-      var operand1 = parseFloat(operands[0]);
-      var operand2 = parseFloat(operands[1]);
+      var operand1 = result.substring(0,split);
+      var operand2 = result.substring(split+1);
+      console.log (operand1 + " " + operand2);
       var finalResult;
       
       // Perform the corresponding operation
+
       switch (currentOperator) {
         case '+':
-          finalResult = operand1 + operand2;
+          finalResult = parseInt(operand1) + parseInt(calculateResultHelper(operand2));
           break;
         case '-':
-          finalResult = operand1 - operand2;
+          finalResult = operand1 - calculateResultHelper(operand2);
           break;
         case '*':
-          finalResult = operand1 * operand2;
+          finalResult = operand1 * calculateResultHelper(operand2);
           break;
         case '/':
-          finalResult = operand1 / operand2;
+          finalResult = operand1 / calculateResultHelper(operand2);
           break;
         default:
           break;
       }
-      
-      document.getElementById('result').value = finalResult;
+
+      decimalPressed = false;
+      return finalResult;
+      //document.getElementById('result').value = finalResult;
     }
     
     function clearResult() {
