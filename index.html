@@ -124,7 +124,7 @@
     </div>
     <div class="row">
       <button onclick="backspace()" class="backspace">⌫</button>
-      <button onclick="invert()" class="operator">±</button>
+      <button onclick="handleOperator('±')" class="operator">±</button>
       <button onclick="root()" class="root">√</button>
       <button onclick="calculateResult()" class="equals">=</button>
 
@@ -157,12 +157,15 @@
             calculateShiftResult();
             break;
           case '±':
-            appendToResult('3.1415926535');
+            appendToResult('3.1415926355');
             break;
           default:
             break;
         }
       } else {
+        if (operator =='±') {
+          invert();
+        }
         appendToResult(operator);
       }
     }
@@ -214,7 +217,6 @@
 
     }
     function calculateResultHelper(result) {
-      console.log(result);
       equalsPressed = true;  
       var operators = ['+', '-', '*', '/'];
       var currentOperator;
@@ -238,7 +240,6 @@
       // Split the result string into operands
       var operand1 = result.substring(0,split);
       var operand2 = result.substring(split+1);
-      console.log (operand1 + " " + operand2);
       var finalResult;
       
       // Perform the corresponding operation
@@ -370,6 +371,10 @@
 
       if (key === 'c' || key === 'C') {
         clearResult();
+      }
+      
+      if (key ==='.') {
+        appendToResult('.');
       }
 
 
