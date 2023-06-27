@@ -137,7 +137,7 @@ function calculateShiftResult() {
     var operatorFound = false;
     for (let i = 0; i < result.length; i++) {
     var c = result[i];
-    if (c == 'C' || c == 'F'  || c == '^' || c == 'L' || c =='') {
+    if (c == 'C' || c == 'F'  || c == '^' || c == 'L' || c =='' || c == '=') {
         currentOperator = c;
         operatorFound = true;
         split = i;
@@ -168,7 +168,10 @@ function calculateShiftResult() {
     case '':
         appendToResult(3.1415926535);
         break;
-        
+    case '=':
+        var result = document.getElementById('result').value;
+        var finalResult = calculateResultHelper(result);
+        document.getElementById('result').value = finalResult;
     }
 
 }
