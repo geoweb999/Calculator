@@ -105,7 +105,7 @@ function calculateResult() {
   }
   var result = document.getElementById("result").value;
   var finalResult = calculateResultHelper(result);
-  document.getElementById("formula").value = result;
+  document.getElementById("formula").value = result + "=";
   document.getElementById("result").value = finalResult;
 }
 function calculateResultHelper(result) {
@@ -169,7 +169,7 @@ function calculateResultHelper(result) {
 
 function calculateShiftResult() {
   var result = document.getElementById("result").value;
-  document.getElementById('formula').value = result;
+  document.getElementById('formula').value = result + "=";
   var operatorFound = false;
   for (let i = 0; i < result.length; i++) {
     var c = result[i];
@@ -226,7 +226,7 @@ function showHelp() {
     "This is an easy-to-use calculator.\n" +
     "Use the number buttons to enter digits.\n" +
     "Press the operator buttons to perform calculations.\n" +
-    "Hold down the Shift key to access additional operators.\n" +
+    "Press the 'Tab' key to access additional operators.\n" +
     "Press the 'C' button to clear the input.\n" +
     "Press the '⌫' button to delete the last digit.\n" +
     "Press the '=' button or Enter key to calculate the result.";
@@ -236,7 +236,8 @@ function showHelp() {
 document.addEventListener("keydown", function (event) {
   var key = event.key;
   // Handle Shift key
-  if (key === "Shift") {
+  if (key === "Tab") {
+    event.preventDefault();
     if (!shiftKeyPressed) {
       shiftKeyPressed = true;
       // Change operator buttons' text
