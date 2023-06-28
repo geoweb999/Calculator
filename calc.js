@@ -69,8 +69,8 @@ function invert() {
   // work backwards to find last operator
   // and invert number to the right of this operator
   for (let i = result.length - 1; i >= 0; i--) {
-    var c = result[i];
-    if (c == "+" || c == "-" || c == "×" || c == "÷" || c == "^" || c == "-") {
+    const c = result[i];
+    if (["+", "-", "×", "÷", "^", "-"].includes(c)) {
       operatorFound = true;
       split = i;
       break;
@@ -89,15 +89,6 @@ function invert() {
   document.getElementById("result").value = result;
 }
 
-function root() {
-  var result = document.getElementById("result").value;
-  if (result < 0) {
-    result = 0 - result;
-  }
-  result = Math.sqrt(result);
-  document.getElementById("result").value = result;
-  equalsPressed = true;
-}
 function calculateResult() {
   if (shiftKeyPressed) {
     calculateShiftResult();
@@ -116,11 +107,10 @@ function calculateResultHelper(result) {
   // Find the operator in the result string
   var operatorFound = false;
   for (let i = 0; i < result.length; i++) {
-    var c = result[i];
-    if (c == "+" || c == "-" || c == "×" || c == "÷" || c == "^") {
-      if (i == 0 && c == "-") {
-        // skip if leading minus sign
-        continue;
+    const c = result[i];
+    if (["+", "-", "×", "÷", "^"].includes(c)) {
+      if (i === 0 && c === "-") {
+        continue; // Skip if leading minus sign
       }
       currentOperator = c;
       operatorFound = true;
@@ -171,15 +161,18 @@ function calculateShiftResult() {
   var result = document.getElementById("result").value;
   document.getElementById('formula').value = result + "=";
   var operatorFound = false;
+  var split;
+
   for (let i = 0; i < result.length; i++) {
-    var c = result[i];
-    if (c == "C" || c == "F" || c == "^" || c == "L" || c == "" || c == "=") {
+    const c = result[i];
+    if (["C", "F", "^", "L", "", "="].includes(c)) {
       currentOperator = c;
       operatorFound = true;
       split = i;
       break;
     }
   }
+
   if (!operatorFound) {
     return;
   }
@@ -234,7 +227,7 @@ function showHelp() {
 }
 
 document.addEventListener("keydown", function (event) {
-  var key = event.key;
+  const key = event.key;
   // Handle Shift key
   if (key === "Tab") {
     event.preventDefault();
