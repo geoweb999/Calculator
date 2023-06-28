@@ -100,12 +100,12 @@ button.logo {
   display: flex;
   justify-content: flex-end;
   border-radius: 12px;
-  background-color: #5f5e5e;
+  background-color: #36299d;
   font-size: 24px;
   color:  #d55201;
   border-width: 4px;
   border: solid;
-  border-color: #36299d;
+
   border-radius: 10px;
 
   font-family: 'Comfortaa', cursive;

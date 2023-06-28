@@ -6,27 +6,30 @@ var shiftOperators = ['°C', '°F', '^', 'ln', '𝝅'];
 
 function handleOperator(operator) {
     if (shiftKeyPressed) {
-      switch (operator) {
-          case '+':
-            appendToResult('F');
-            calculateShiftResult();
-            break;
-          case '-':
-            appendToResult('C');
-            calculateShiftResult();
-            break;
-          case '×':
-            appendToResult('^');
-            break;
-          case '÷':
-            appendToResult('L');
-            calculateShiftResult();
-            break;
-          case '±':
-            appendToResult('3.1415926355');
-            break;
-          default:
-            break;
+        switch (operator) {
+            case '+':
+                appendToResult('F');
+                calculateShiftResult();
+                break;
+            case '-':
+                appendToResult('C');
+                calculateShiftResult();
+                break;
+            case '×':
+                appendToResult('^');
+                break;
+            case '÷':
+                appendToResult('L');
+                calculateShiftResult();
+                break;
+            case '±':
+                appendToResult('3.1415926355');
+                break;
+            case '=':
+                calculateResult();
+                break;
+            default:
+                break;
         }
     } else {
       if (operator =='±') {
@@ -38,10 +41,13 @@ function handleOperator(operator) {
 }
 
 function appendToResult(value) {
+    // some tricks to ensure there is only one decimal
     if (decimalPressed && value == '.') {
+        // ignore
         return;
     }
     if (!decimalPressed && value == '.') {
+        // first decimal allowed
         decimalPressed = true;
     } 
     var operators = ['+', '-', '×', '÷'];
@@ -60,27 +66,26 @@ function invert() {
     var result = document.getElementById('result').value;
     var operatorFound = false;
     var split;
+    // work backwards to find last operator 
+    // and invert number to the right of this operator
     for (let i = result.length-1; i >= 0; i--) {
-      var c = result[i];
-      if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^' || c == '-') {
-        operatorFound = true;
-        console.log("operator found " + c);
-        split = i;
-        break;
-      }
+        var c = result[i];
+        if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^' || c == '-') {
+            operatorFound = true;
+            split = i;
+            break;
+        }
     }
 
     if (operatorFound) {
-      var newResult = result.substring(split+1);
-      console.log(newResult);
-
-      newResult = 0 - newResult;
-      result = result.substring(0,split+1) + newResult;
-      console.log(result);
+        // parse string right of operator
+        var newResult = result.substring(split+1);
+        newResult = 0 - newResult;
+        result = result.substring(0,split+1) + newResult;
 
     } else {
-      result = 0 - result;
-      console.log(result);
+        // no operator present, just invert the whole result
+        result = 0 - result;
     }
     document.getElementById('result').value = result;
 
@@ -116,6 +121,10 @@ function calculateResultHelper(result) {
     for (let i = 0; i < result.length; i++) {
       var c = result[i];
       if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^') {
+          if (i==0 && c =='-') {
+              // skip if leading minus sign
+              continue;
+          }
           currentOperator = c;
           operatorFound = true;
           split = i;
@@ -162,44 +171,43 @@ function calculateShiftResult() {
     var result = document.getElementById('result').value;
     var operatorFound = false;
     for (let i = 0; i < result.length; i++) {
-    var c = result[i];
-    if (c == 'C' || c == 'F'  || c == '^' || c == 'L' || c =='' || c == '=') {
-        currentOperator = c;
-        operatorFound = true;
-        split = i;
-        break;
-    }
+        var c = result[i];
+        if (c == 'C' || c == 'F'  || c == '^' || c == 'L' || c =='' || c == '=') {
+            currentOperator = c;
+            operatorFound = true;
+            split = i;
+            break;
+        }
     }
     if (!operatorFound) {
-    return;
+        return;
     }
     equalsPressed = true;
     decimalPressed = false;
     var operand = result.substring(0,split);
 
     switch (currentOperator) {
-    case 'C':
-        document.getElementById('result').value = (operand * 1.8 + 32);
-        break;
-    case 'F':
-        document.getElementById('result').value = (operand - 32) * 5 / 9;
-        break;
-    case '^':
-        var right = result.substring(split+1);
-        document.getElementById('result').value = Math.pow(operand,right);
-        break;
-    case 'L':
-        document.getElementById('result').value = Math.log(operand);
-        break;
-    case '':
-        appendToResult(3.1415926535);
-        break;
-    case '=':
-        var result = document.getElementById('result').value;
-        var finalResult = calculateResultHelper(result);
-        document.getElementById('result').value = finalResult;
+        case 'C':
+            document.getElementById('result').value = (operand * 1.8 + 32);
+            break;
+        case 'F':
+            document.getElementById('result').value = (operand - 32) * 5 / 9;
+            break;
+        case '^':
+            var right = result.substring(split+1);
+            document.getElementById('result').value = Math.pow(operand,right);
+            break;
+        case 'L':
+            document.getElementById('result').value = Math.log(operand);
+            break;
+        case '':
+            appendToResult(3.1415926535);
+            break;
+        case '=':
+            var result = document.getElementById('result').value;
+            var finalResult = calculateResultHelper(result);
+            document.getElementById('result').value = finalResult;
     }
-
 }
 
 function clearResult() {
@@ -225,53 +233,68 @@ function showHelp() {
   
 document.addEventListener('keydown', function(event) {
     var key = event.key;
-        // Handle Shift key
+    // Handle Shift key
     if (key === 'Shift') {
-    if (!shiftKeyPressed) {
-        shiftKeyPressed = true;
-        
-        // Change operator buttons' text
-        var operatorButtons = document.getElementsByClassName('operator');
-        for (var i = 0; i < operatorButtons.length; i++) {
-        operatorButtons[i].textContent = shiftOperators[i];
+        if (!shiftKeyPressed) {
+            shiftKeyPressed = true;
+            // Change operator buttons' text
+            var operatorButtons = document.getElementsByClassName('operator');
+            for (var i = 0; i < operatorButtons.length; i++) {
+                operatorButtons[i].textContent = shiftOperators[i];
+            }
+        } else {
+            shiftKeyPressed = false;
+            // Restore operator buttons' text
+            var operatorButtons = document.getElementsByClassName('operator');
+            for (var i = 0; i < operatorButtons.length; i++) {
+                operatorButtons[i].textContent = originalOperators[i];
+            }
         }
-    } else {
-    shiftKeyPressed = false;
-    
-    // Restore operator buttons' text
-    var operatorButtons = document.getElementsByClassName('operator');
-    for (var i = 0; i < operatorButtons.length; i++) {
-        operatorButtons[i].textContent = originalOperators[i];
     }
-    }
-}
     
     // Handle numbers
     if (!isNaN(key)) {
-    appendToResult(key);
+        appendToResult(key);
     }
     
     // Handle operators
+    var c;
     if (key === '+' || key === '-' || key === '*' || key === '/') {
-    appendToResult(key);
+        switch (key) {
+            case '+':
+                c = '+';
+                break;
+            case '-':
+                c = '-';
+                break;
+            case '*':
+                c = '×';
+                break;
+            case '/' :
+                c = '÷';
+                break;
+            default:
+                break;
+        }
+        appendToResult(c);
     }
     
     // Handle equal sign (=)
-    if (key === '=') {
-    calculateResult();
+    if (key === '=' || key === 'Enter') {
+        calculateResult();
     }
     
     // Handle backspace
     if (key === 'Backspace') {
-    backspace();
+        backspace();
     }
 
     if (key === 'c' || key === 'C') {
-    clearResult();
+        clearResult();
     }
     
     if (key ==='.') {
-    appendToResult('.');
+        appendToResult('.');
     }
 
 
