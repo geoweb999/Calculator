@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Codystar&family=DotGothic16&family=Lekton&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Codystar&family=Comfortaa&family=Concert+One&family=DotGothic16&family=Lekton&family=Oxanium&family=Staatliches&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="calc.css">
 
   <title>Calculator</title>
@@ -22,19 +22,19 @@
       <button onclick="appendToResult('4')">4</button>
       <button onclick="appendToResult('5')">5</button>
       <button onclick="appendToResult('6')">6</button>
-      <button onclick="handleOperator('-')" class="operator">−</button>
+      <button onclick="handleOperator('-')" class="operator">-</button>
     </div>
     <div class="row">
       <button onclick="appendToResult('1')">1</button>
       <button onclick="appendToResult('2')">2</button>
       <button onclick="appendToResult('3')">3</button>
-      <button onclick="handleOperator('*')" class="operator">×</button>
+      <button onclick="handleOperator('×')" class="operator">×</button>
     </div>
     <div class="row">
       <button onclick="appendToResult('0')">0</button>
       <button onclick="appendToResult('.')">.</button>
-      <button onclick="clearResult()">C</button>
-      <button onclick="handleOperator('/')" class="operator">÷</button>
+      <button onclick="clearResult()" class="backspace">C</button>
+      <button onclick="handleOperator('÷')" class="operator">÷</button>
     </div>
     <div class="row">
       <button onclick="backspace()" class="backspace">⌫</button>
@@ -42,9 +42,10 @@
       <button onclick="calculateResult()" class="equals">=</button>
 
     </div>
-  
+    <div class="bottom">
+      <button onclick="showHelp()" class="logo">Easy Calculator</button>
+    </div>
   </div>
-  <button onclick="showHelp()">Help</button>
   <script src="calc.js"></script>
 
 </body>

@@ -1,38 +1,39 @@
 var equalsPressed = false;
 var decimalPressed = false;
 var shiftKeyPressed = false;
-var originalOperators = ['+', '−', '×', '÷', '±'];
-var shiftOperators = ['℃', '℉', '^', 'ln', '𝝅'];
+var originalOperators = ['+', '-', '×', '÷', '±'];
+var shiftOperators = ['°C', '°F', '^', 'ln', '𝝅'];
 
 function handleOperator(operator) {
     if (shiftKeyPressed) {
-    switch (operator) {
-        case '+':
-        appendToResult('F');
-        calculateShiftResult();
-        break;
-        case '-':
-        appendToResult('C');
-        calculateShiftResult();
-        break;
-        case '*':
-        appendToResult('^');
-        break;
-        case '/':
-        appendToResult('L');
-        calculateShiftResult();
-        break;
-        case '±':
-        appendToResult('3.1415926355');
-        break;
-        default:
-        break;
-    }
+      switch (operator) {
+          case '+':
+            appendToResult('F');
+            calculateShiftResult();
+            break;
+          case '-':
+            appendToResult('C');
+            calculateShiftResult();
+            break;
+          case '×':
+            appendToResult('^');
+            break;
+          case '÷':
+            appendToResult('L');
+            calculateShiftResult();
+            break;
+          case '±':
+            appendToResult('3.1415926355');
+            break;
+          default:
+            break;
+        }
     } else {
-    if (operator =='±') {
-        invert();
-    }
-    appendToResult(operator);
+      if (operator =='±') {
+          invert();
+          return;
+      }
+      appendToResult(operator);
     }
 }
 
@@ -43,7 +44,7 @@ function appendToResult(value) {
     if (!decimalPressed && value == '.') {
         decimalPressed = true;
     } 
-    var operators = ['+', '-', '*', '/'];
+    var operators = ['+', '-', '×', '÷'];
     if (operators.includes(value)) {
         decimalPressed = false;
     }
@@ -56,8 +57,28 @@ function appendToResult(value) {
 }
 
 function invert() {
+    console.log("in invert");
     var result = document.getElementById('result').value;
-    result = 0 - result;
+    var operatorFound = false;
+    var split;
+    for (let i = result.length-1; i >= 0; i--) {
+      var c = result[i];
+      if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^' || c == '-') {
+        console.log("operator found");
+        operatorFound = true;
+        split = i;
+      }
+    }
+
+    if (operatorFound) {
+      var newResult = result.substring(split+1);
+
+      newResult = 0 - newResult;
+      result = result.substring(0,split+1) + newResult;
+    } else {
+      result = 0 - result;
+      console.log("operator not found");
+    }
     document.getElementById('result').value = result;
 
 }
@@ -84,23 +105,22 @@ function calculateResult() {
 }
 function calculateResultHelper(result) {
     equalsPressed = true;  
-    var operators = ['+', '-', '*', '/'];
     var currentOperator;
     var split;
     
     // Find the operator in the result string
     var operatorFound = false;
     for (let i = 0; i < result.length; i++) {
-    var c = result[i];
-    if (c == '+' || c == '-'  || c == '*' || c == '/') {
-        currentOperator = c;
-        operatorFound = true;
-        split = i;
-        break;
-    }
+      var c = result[i];
+      if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^') {
+          currentOperator = c;
+          operatorFound = true;
+          split = i;
+          break;
+      }
     }
     if (!operatorFound) {
-    return result;
+      return result;
     }
     
     // Split the result string into operands
@@ -117,12 +137,15 @@ function calculateResultHelper(result) {
     case '-':
         finalResult = operand1 - calculateResultHelper(operand2);
         break;
-    case '*':
+    case '×':
         finalResult = operand1 * calculateResultHelper(operand2);
         break;
-    case '/':
+    case '÷':
         finalResult = operand1 / calculateResultHelper(operand2);
         break;
+    case '^':
+      finalResult = Math.pow(operand1,operand2);
+      break;
     default:
         break;
     }
@@ -196,110 +219,6 @@ function showHelp() {
     alert(helpMessage);
 }
 
-function calculateExpression(expression) {
-    // Remove any whitespace from the expression
-    expression = expression.replace(/\s/g, '');
-  
-    // Helper function to perform arithmetic operations
-    function performOperation(operator, operand1, operand2) {
-      switch (operator) {
-        case '+':
-          return operand1 + operand2;
-        case '-':
-          return operand1 - operand2;
-        case '*':
-          return operand1 * operand2;
-        case '/':
-          return operand1 / operand2;
-        default:
-          return NaN; // Invalid operator
-      }
-    }
-  
-    // Helper function to evaluate subexpressions within parentheses
-    function evaluateSubexpression(subexpression) {
-      // Remove parentheses from the subexpression
-      subexpression = subexpression.slice(1, -1);
-  
-      // Evaluate the subexpression recursively
-      return evaluateExpression(subexpression);
-    }
-  
-    // Helper function to evaluate the expression recursively
-    function evaluateExpression(expression) {
-      let operandStack = [];
-      let operatorStack = [];
-  
-      let currentNumber = '';
-      for (let i = 0; i < expression.length; i++) {
-        const char = expression[i];
-  
-        if (!isNaN(char) || char === '.') {
-          currentNumber += char;
-  
-          // Check if it's the last character in the expression
-          if (i === expression.length - 1) {
-            operandStack.push(parseFloat(currentNumber));
-          }
-        } else {
-          if (currentNumber !== '') {
-            operandStack.push(parseFloat(currentNumber));
-            currentNumber = '';
-          }
-  
-          if (char === '(') {
-            // Find the closing parenthesis and evaluate the subexpression
-            let openCount = 1;
-            let closeCount = 0;
-            let subexpression = '';
-            i++;
-            while (openCount !== closeCount) {
-              if (expression[i] === '(') {
-                openCount++;
-              } else if (expression[i] === ')') {
-                closeCount++;
-              }
-              if (openCount !== closeCount) {
-                subexpression += expression[i];
-                i++;
-              }
-            }
-            operandStack.push(evaluateSubexpression(subexpression));
-          } else {
-            if (operatorStack.length > 0) {
-              const topOperator = operatorStack[operatorStack.length - 1];
-              if (
-                (char === '+' || char === '-') &&
-                (topOperator === '*' || topOperator === '/')
-              ) {
-                while (operatorStack.length > 0) {
-                  const operator = operatorStack.pop();
-                  const operand2 = operandStack.pop();
-                  const operand1 = operandStack.pop();
-                  operandStack.push(
-                    performOperation(operator, operand1, operand2)
-                  );
-                }
-              }
-            }
-            operatorStack.push(char);
-          }
-        }
-      }
-  
-      // Perform the remaining operations in the stacks
-      while (operatorStack.length > 0) {
-        const operator = operatorStack.pop();
-        const operand2 = operandStack.pop();
-        const operand1 = operandStack.pop();
-        operandStack.push(performOperation(operator, operand1, operand2));
-      }
-  
-      return operandStack[0];
-    }
-  
-    return evaluateExpression(expression);
-  }
   
 document.addEventListener('keydown', function(event) {
     var key = event.key;
