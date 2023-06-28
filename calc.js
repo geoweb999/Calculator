@@ -57,27 +57,30 @@ function appendToResult(value) {
 }
 
 function invert() {
-    console.log("in invert");
     var result = document.getElementById('result').value;
     var operatorFound = false;
     var split;
     for (let i = result.length-1; i >= 0; i--) {
       var c = result[i];
       if (c == '+' || c == '-'  || c == '×' || c == '÷' || c == '^' || c == '-') {
-        console.log("operator found");
         operatorFound = true;
+        console.log("operator found " + c);
         split = i;
+        break;
       }
     }
 
     if (operatorFound) {
       var newResult = result.substring(split+1);
+      console.log(newResult);
 
       newResult = 0 - newResult;
       result = result.substring(0,split+1) + newResult;
+      console.log(result);
+
     } else {
       result = 0 - result;
-      console.log("operator not found");
+      console.log(result);
     }
     document.getElementById('result').value = result;
 
@@ -132,20 +135,20 @@ function calculateResultHelper(result) {
 
     switch (currentOperator) {
     case '+':
-        finalResult = parseInt(operand1) + parseInt(calculateResultHelper(operand2));
+        finalResult = parseFloat(operand1) + parseFloat(calculateResultHelper(operand2));
         break;
     case '-':
-        finalResult = operand1 - calculateResultHelper(operand2);
+        finalResult = parseFloat(operand1) - parseFloat(calculateResultHelper(operand2));
         break;
     case '×':
-        finalResult = operand1 * calculateResultHelper(operand2);
+        finalResult = parseFloat(operand1) * parseFloat(calculateResultHelper(operand2));
         break;
     case '÷':
-        finalResult = operand1 / calculateResultHelper(operand2);
+        finalResult = parseFloat(operand1) / parseFloat(calculateResultHelper(operand2));
         break;
     case '^':
-      finalResult = Math.pow(operand1,operand2);
-      break;
+        finalResult = Math.pow(parseFloat(operand1),parseFloat(operand2));
+        break;
     default:
         break;
     }
