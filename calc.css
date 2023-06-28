@@ -92,7 +92,7 @@ body {
   display: flex;
 }
 
-.logo {
+button.logo {
   margin: 0 auto;
   margin-top: 12px;
   height: 32px;
@@ -103,5 +103,12 @@ body {
   font-size: 24px;
   color:  #d55201;
   border-width: 2px;
+  border: solid;
+  border-color: #36299d;
+
   font-family: 'Comfortaa', cursive;
+}
+
+button.logo:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
