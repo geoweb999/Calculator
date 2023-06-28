@@ -1,5 +1,6 @@
 body {
   font-family: 'Baloo Bhaijaan 2', cursive;
+  margin-left: 0px;
 }
 
 .calculator {
@@ -126,4 +127,15 @@ button.logo {
 button.logo:hover {
   box-shadow: 3px 7px 5px 4px rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);  
   color: #ff6200;
+}
+
+.copyright {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #f2f2f2;
+    color: #555;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
 }
