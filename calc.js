@@ -105,6 +105,7 @@ function calculateResult() {
   }
   var result = document.getElementById("result").value;
   var finalResult = calculateResultHelper(result);
+  document.getElementById("formula").value = result;
   document.getElementById("result").value = finalResult;
 }
 function calculateResultHelper(result) {
@@ -164,11 +165,11 @@ function calculateResultHelper(result) {
 
   decimalPressed = false;
   return finalResult;
-  //document.getElementById('result').value = finalResult;
 }
 
 function calculateShiftResult() {
   var result = document.getElementById("result").value;
+  document.getElementById('formula').value = result;
   var operatorFound = false;
   for (let i = 0; i < result.length; i++) {
     var c = result[i];
@@ -211,6 +212,7 @@ function calculateShiftResult() {
 }
 
 function clearResult() {
+  document.getElementById("formula").value = "";
   document.getElementById("result").value = "";
 }
 
@@ -221,7 +223,7 @@ function backspace() {
 
 function showHelp() {
   var helpMessage =
-    "This is a simple calculator.\n" +
+    "This is an easy-to-use calculator.\n" +
     "Use the number buttons to enter digits.\n" +
     "Press the operator buttons to perform calculations.\n" +
     "Hold down the Shift key to access additional operators.\n" +
